@@ -6,4 +6,19 @@ before_install:
   - docker build -t tkorkmazer/docker-react -f Dockerfile.dev .
 
 script:
-  - docker run tkorkmazer/docker-react npm run test -- --coverage
+  - docker run -e CI=true tkorkmazer/docker-react npm run test
+
+language: generic
+
+deploy:
+  provider: elasticbeanstalk
+  region: "eu-central-1"
+  app: "docker-react"
+  env: "Dockerreact-env"
+  bucket_name: "elasticbeanstalk-eu-central-1-631209419881"
+  bucket_path: "docker-react"
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key:
+    secure: "$AWS_SECRET_KEY"
